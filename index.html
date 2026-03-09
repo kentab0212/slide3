@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Palette ── ワーク④</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f0f14;
+            --bg-slide: #18181f;
+            --accent-1: #e8c170;
+            --accent-2: #c4a35a;
+            --accent-3: #f0d68a;
+            --text-primary: #f0ede6;
+            --text-secondary: #a8a5a0;
+            --text-muted: #6b6965;
+            --gradient-warm: linear-gradient(135deg, #e8c170 0%, #d4956b 50%, #c06858 100%);
+            --gradient-cool: linear-gradient(135deg, #7eb5c4 0%, #5a8fa0 50%, #3d6a7a 100%);
+            --gradient-purple: linear-gradient(135deg, #9b8ec4 0%, #7a6fb0 50%, #5c5494 100%);
+            --surface: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow: hidden;
+        }
+
+        /* ─── Slide Container ─── */
+        .deck {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            opacity: 0;
+            pointer-events: none;
+            background: var(--bg-slide);
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            pointer-events: all;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+
+        /* ─── Slide inner wrapper ─── */
+        .slide-inner {
+            max-width: 1100px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* ─── Typography ─── */
+        .slide-number {
+            position: absolute;
+            top: 32px;
+            right: 48px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .section-label {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent-1);
+            font-weight: 500;
+            margin-bottom: -16px;
+        }
+
+        h1 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        h1 .accent {
+            color: var(--accent-1);
+        }
+
+        h1 .sub {
+            display: block;
+            font-size: 0.45em;
+            color: var(--text-secondary);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            margin-top: 12px;
+        }
+
+        h2 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(24px, 3.5vw, 42px);
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        h2 .accent {
+            color: var(--accent-1);
+        }
+
+        h3 {
+            font-size: clamp(18px, 2vw, 24px);
+            font-weight: 500;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        p,
+        li {
+            font-size: clamp(16px, 1.6vw, 22px);
+            line-height: 1.8;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .big-text {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 700;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .highlight {
+            color: var(--accent-1);
+            font-weight: 500;
+        }
+
+        .quote-block {
+            border-left: 3px solid var(--accent-2);
+            padding: 16px 24px;
+            background: var(--surface);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: clamp(16px, 1.5vw, 20px);
+            line-height: 1.8;
+        }
+
+        /* ─── Cards & Boxes ─── */
+        .card-row {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 200px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-1);
+            font-weight: 700;
+        }
+
+        .card h3 {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 15px;
+        }
+
+        /* Gradient accent cards */
+        .card.warm {
+            border-color: rgba(232, 193, 112, 0.25);
+        }
+
+        .card.cool {
+            border-color: rgba(126, 181, 196, 0.25);
+        }
+
+        .card.purple {
+            border-color: rgba(155, 142, 196, 0.25);
+        }
+
+        /* ─── 3-layer diagram ─── */
+        .layer-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+        }
+
+        .layer {
+            padding: 24px 32px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .layer:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .layer:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        .layer-tag {
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 4px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .layer.top {
+            background: rgba(232, 193, 112, 0.08);
+        }
+
+        .layer.top .layer-tag {
+            background: rgba(232, 193, 112, 0.2);
+            color: var(--accent-1);
+        }
+
+        .layer.mid {
+            background: rgba(155, 142, 196, 0.06);
+        }
+
+        .layer.mid .layer-tag {
+            background: rgba(155, 142, 196, 0.2);
+            color: #b0a4d8;
+        }
+
+        .layer.bot {
+            background: rgba(126, 181, 196, 0.06);
+        }
+
+        .layer.bot .layer-tag {
+            background: rgba(126, 181, 196, 0.2);
+            color: #8ac4d4;
+        }
+
+        .layer-content {
+            flex: 1;
+        }
+
+        .layer-content h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .layer-content p {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ─── Matrix ─── */
+        .matrix {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .matrix th,
+        .matrix td {
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            line-height: 1.5;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .matrix th {
+            background: var(--surface);
+            color: var(--accent-1);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .matrix td {
+            color: var(--text-secondary);
+        }
+
+        .matrix .row-label {
+            text-align: right;
+            font-weight: 500;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+            min-width: 100px;
+        }
+
+        /* ─── Horizontal axis option pills ─── */
+        .axis-options {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .axis-pill {
+            padding: 12px 24px;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface);
+        }
+
+        .axis-pill .vs {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        /* ─── Numbered list ─── */
+        .numbered-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .numbered-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .num-circle {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            background: rgba(232, 193, 112, 0.15);
+            color: var(--accent-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* ─── Technique cards ─── */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .tech-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tech-card .tech-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-1);
+        }
+
+        .tech-card .tech-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .tech-card .tech-example {
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+
+        /* ─── Final slide presentation template ─── */
+        .pres-template {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            align-items: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .pres-template .pres-line {
+            width: 200px;
+            border-bottom: 2px dashed var(--text-muted);
+            display: inline-block;
+        }
+
+        .pres-template .pres-kw {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .pres-template .pres-sub {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .pres-template .pres-label {
+            font-size: 11px;
+            color: var(--accent-1);
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        /* ─── Title slide special ─── */
+        .title-slide {
+            text-align: center;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .title-slide .title-deco {
+            width: 48px;
+            height: 3px;
+            background: var(--gradient-warm);
+            border-radius: 2px;
+        }
+
+        .title-slide .time-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border: 1px solid var(--accent-2);
+            border-radius: 40px;
+            color: var(--accent-1);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* ─── Navigation ─── */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(15, 15, 20, 0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 100;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--surface);
+            color: var(--text-primary);
+            border-color: var(--accent-2);
+        }
+
+        .nav-progress {
+            font-size: 13px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .progress-bar-track {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gradient-warm);
+            transition: width 0.4s ease;
+            border-radius: 2px;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 28px 80px;
+            }
+
+            .card-row {
+                flex-direction: column;
+            }
+
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .axis-options {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .anim {
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .slide.active .anim:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .slide.active .anim:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .slide.active .anim:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .slide.active .anim:nth-child(4) {
+            animation-delay: 0.55s;
+        }
+
+        .slide.active .anim:nth-child(5) {
+            animation-delay: 0.7s;
+        }
+
+        .slide.active .anim:nth-child(6) {
+            animation-delay: 0.85s;
+        }
+
+        /* ─── Subtle background pattern ─── */
+        .slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 20%, rgba(232, 193, 112, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 80%, rgba(126, 181, 196, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="deck" id="deck">
+
+        <!-- ========== SLIDE 0: Title ========== -->
+        <div class="slide active" data-slide="0">
+            <div class="slide-inner title-slide">
+                <div class="title-deco anim"></div>
+                <div class="section-label anim">WORK ④</div>
+                <h1 class="anim">
+                    <span class="accent">My Palette</span> 作成
+                    <span class="sub">言葉を編集し、自分だけの色を見つける</span>
+                </h1>
+                <div class="time-badge anim">10:00 – 12:00 ／ 140分</div>
+                <p class="anim" style="color:var(--text-muted); font-size:16px; margin-top:12px;">
+                    編集者 馬場
+                </p>
+            </div>
+            <span class="slide-number">01</span>
+        </div>
+
+        <!-- ========== SLIDE 1: 自己紹介 & 今日やること ========== -->
+        <div class="slide" data-slide="1">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 1 ── 導入</div>
+                <h2 class="anim">この時間で<span class="accent">やること</span></h2>
+                <div class="card-row anim">
+                    <div class="card warm">
+                        <div class="card-label">20 min</div>
+                        <h3>編集の要点</h3>
+                        <p>言葉を選び取るための考え方を共有</p>
+                    </div>
+                    <div class="card cool">
+                        <div class="card-label">30 min</div>
+                        <h3>素材を整理</h3>
+                        <p>言葉を並べ、具体化し、分類する</p>
+                    </div>
+                    <div class="card purple">
+                        <div class="card-label">60 min</div>
+                        <h3>形にする</h3>
+                        <p>My Paletteをブラッシュアップ＆アウトプット</p>
+                    </div>
+                </div>
+                <p class="anim" style="text-align:center; margin-top:8px;">
+                    この2日間で集めた<span class="highlight">「言葉」</span>と<span class="highlight">「線」</span>を<br>
+                    実際に編集していく作業の伴走をします。
+                </p>
+            </div>
+            <span class="slide-number">02</span>
+        </div>
+
+        <!-- ========== SLIDE 2: 編集とは何か ========== -->
+        <div class="slide" data-slide="2">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 1 ── 編集の要点</div>
+                <h2 class="anim">なぜ<span class="accent">「編集」</span>が必要なのか</h2>
+                <div class="big-text anim" style="margin: 16px 0;">
+                    編集の起こりは<span class="accent">「制限」</span>にある
+                </div>
+                <div class="card-row anim">
+                    <div class="card warm">
+                        <div class="card-label">制限 ①</div>
+                        <h3>時間の制限</h3>
+                        <p>生きている時間は有限。一日にできることも有限。</p>
+                    </div>
+                    <div class="card cool">
+                        <div class="card-label">制限 ②</div>
+                        <h3>空間・紙面の制限</h3>
+                        <p>体という器があり、ページ数にも限りがある。</p>
+                    </div>
+                </div>
+                <p class="anim" style="text-align:center;">
+                    不要な部分を切り、<span class="highlight">選び取って残していく</span>作業──<br>
+                    それが編集。
+                </p>
+            </div>
+            <span class="slide-number">03</span>
+        </div>
+
+        <!-- ========== SLIDE 3: 具体と抽象 ========== -->
+        <div class="slide" data-slide="3">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 1 ── 編集の要点</div>
+                <h2 class="anim"><span class="accent">「具体」</span>と<span class="accent">「抽象」</span></h2>
+                <div class="layer-stack anim">
+                    <div class="layer top">
+                        <span class="layer-tag">抽象</span>
+                        <div class="layer-content">
+                            <h3>テーマ</h3>
+                            <p>雑誌の特集名。全体を括るワード。</p>
+                        </div>
+                    </div>
+                    <div class="layer mid" style="border-left: 3px solid var(--accent-1);">
+                        <span class="layer-tag">真ん中</span>
+                        <div class="layer-content">
+                            <h3 style="color:var(--accent-1);">My Paletteワード</h3>
+                            <p>具体と抽象の掛け算・組み合わせから生まれる言葉。</p>
+                        </div>
+                    </div>
+                    <div class="layer bot">
+                        <span class="layer-tag">具体</span>
+                        <div class="layer-content">
+                            <h3>エピソード・取材対象</h3>
+                            <p>一つ一つの出来事、人、体験、数字。</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="anim" style="text-align:center;">
+                    この<span class="highlight">「真ん中の言葉」</span>を、今日の時間で見つけていきます。
+                </p>
+            </div>
+            <span class="slide-number">04</span>
+        </div>
+
+        <!-- ========== SLIDE 4: 常套句を使わない ========== -->
+        <div class="slide" data-slide="4">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 1 ── 編集の要点</div>
+                <h2 class="anim"><span class="accent">常套句</span>を使わない</h2>
+                <div class="card-row anim">
+                    <div class="card">
+                        <div class="card-label" style="color:#e06050;">✕ 常套句</div>
+                        <p style="font-size:16px;">「秘伝のタレを継ぎ足し」「目を輝かせた」「こだわりの製法」</p>
+                        <p style="font-size:13px; color:var(--text-muted);">→ 他の誰にでも当てはまる</p>
+                    </div>
+                    <div class="card warm">
+                        <div class="card-label">◎ 具体的に</div>
+                        <p style="font-size:16px;">その人・その瞬間にしか言えない言葉を使う</p>
+                        <p style="font-size:13px; color:var(--text-muted);">→ 世界に一つの表現になる</p>
+                    </div>
+                </div>
+                <div class="quote-block anim">
+                    <strong>原稿は「猿が読んでもわかるように」書きなさい。</strong><br>
+                    <strong>「手垢のついた表現」を使うな。</strong><br>
+                    <span style="font-size:14px; color:var(--text-muted);">── マガジンハウス・町田さん（現POPEYE編集長）の教え</span>
+                </div>
+                <p class="anim" style="text-align:center;">
+                    徹底的に<span class="highlight">「具体的に書く」</span>こと。<br>
+                    自分だけの言葉を見つけてください。
+                </p>
+            </div>
+            <span class="slide-number">05</span>
+        </div>
+
+        <!-- ========== SLIDE 5: 大事にしてほしいこと ========== -->
+        <div class="slide" data-slide="5">
+            <div class="slide-inner title-slide">
+                <div class="title-deco anim"></div>
+                <div class="big-text anim">
+                    一番大事なのは<br>
+                    <span class="accent">「自分にとっていい言葉」</span><br>
+                    であるかどうか
+                </div>
+                <p class="anim" style="max-width:700px; text-align:center;">
+                    人に伝わることも大事だけれど、<br>
+                    まずは<span class="highlight">自分の心が動く</span>こと。<br>
+                    自分のことを軸に置いてください。
+                </p>
+            </div>
+            <span class="slide-number">06</span>
+        </div>
+
+        <!-- ========== SLIDE 6: 作業スタート ========== -->
+        <div class="slide" data-slide="6">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 2 ── 素材を整理</div>
+                <h2 class="anim">ステップ１：<span class="accent">具体ワード</span>を掘り下げる</h2>
+                <p class="anim" style="font-size:18px;">
+                    お手元の付箋やメモを<strong>すべてテーブルの上に広げて</strong>ください。
+                </p>
+                <div class="card-row anim">
+                    <div class="card warm">
+                        <div class="card-label">掘り下げのコツ ①</div>
+                        <h3>なぜなら（Why）</h3>
+                        <p>なぜそう思ったのか？を掘る</p>
+                    </div>
+                    <div class="card cool">
+                        <div class="card-label">掘り下げのコツ ②</div>
+                        <h3>つまり／ということは</h3>
+                        <p>言い換えてみる・一段階抽象化する</p>
+                    </div>
+                </div>
+                <div class="quote-block anim" style="font-style:normal; font-size:15px;">
+                    「挑戦したい」→ なぜ？→「同じことの繰り返しに飽きた」→ いつ？→「去年の秋ごろから」→ 何が変わった？→「子供の成長を見て、自分も変わらなきゃと思った」
+                </div>
+                <p class="anim" style="text-align:center;">
+                    一つの言葉から<span class="highlight">枝を伸ばしていく</span>イメージで。<br>
+                    自分自身に良い取材をして、素材を磨いてください。
+                </p>
+            </div>
+            <span class="slide-number">07</span>
+        </div>
+
+        <!-- ========== SLIDE 7: 横軸で分類 ========== -->
+        <div class="slide" data-slide="7">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 2 ── 素材を整理</div>
+                <h2 class="anim">ステップ２：<span class="accent">横軸</span>で分類する / 抽象ワード追加とラベリング</h2>
+                <p class="anim">具体ワードが増えてきたら、横軸で分けてみましょう。<br>迷う方は以下からお選びください：</p>
+                <div class="axis-options anim">
+                    <div class="axis-pill">
+                        <span style="color:var(--accent-1); font-weight:700;">仕事（A面）</span>
+                        <span class="vs">↔</span>
+                        <span style="color:#8ac4d4; font-weight:700;">生活（B面）</span>
+                    </div>
+                    <div class="axis-pill">
+                        <span style="color:var(--accent-1); font-weight:700;">わたし</span>
+                        <span class="vs">↔</span>
+                        <span style="color:#8ac4d4; font-weight:700;">わたし以外</span>
+                    </div>
+                    <div class="axis-pill">
+                        <span style="color:var(--accent-1); font-weight:700;">現状（いまと過去）</span>
+                        <span class="vs">↔</span>
+                        <span style="color:#8ac4d4; font-weight:700;">理想（未来）</span>
+                    </div>
+                </div>
+                <p class="anim" style="text-align:center; margin-top:8px;">
+                    自分で軸を作ってもOK。<span class="highlight">並べることで見えてくるもの</span>がある。
+                </p>
+            </div>
+            <span class="slide-number">08</span>
+        </div>
+
+        <!-- ========== SLIDE 8: 整理マトリクス ========== -->
+        <div class="slide" data-slide="8">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 2 ── 素材を整理</div>
+                <h2 class="anim">整理<span class="accent">マトリクス</span></h2>
+                <table class="matrix anim">
+                    <thead>
+                        <tr>
+                            <th style="width:100px;"></th>
+                            <th>← 左（例：仕事 A面）</th>
+                            <th>右（例：生活 B面）→</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="row-label">抽象<br><small>テーマ</small></td>
+                            <td>「一流でありたい」</td>
+                            <td>「本質的でありたい」</td>
+                        </tr>
+                        <tr>
+                            <td class="row-label" style="color:var(--accent-1);">真ん中<br><small>フレーズ</small></td>
+                            <td style="color:var(--accent-1);">「感動させたい」</td>
+                            <td style="color:var(--accent-1);">「記憶をしていたい」</td>
+                        </tr>
+                        <tr>
+                            <td class="row-label">具体<br><small>エピソード</small></td>
+                            <td>「BRUTUSでの経験」</td>
+                            <td>「娘の笑顔を見た公園」</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="anim" style="text-align:center;">
+                    <span class="highlight">縦軸</span>：具体 → 真ん中 → 抽象（固定）<br>
+                    <span class="highlight">横軸</span>：自分で選ぶ
+                </p>
+            </div>
+            <span class="slide-number">09</span>
+        </div>
+
+        <!-- ========== SLIDE 9: 休憩 ========== -->
+        <div class="slide" data-slide="9">
+            <div class="slide-inner title-slide">
+                <div class="title-deco anim" style="background: var(--gradient-cool);"></div>
+                <h1 class="anim" style="font-size:clamp(36px,5vw,56px);">
+                    <span style="color:#8ac4d4;">休憩</span>
+                    <span class="sub">10分間 ── 10:50〜11:00</span>
+                </h1>
+                <p class="anim" style="text-align:center;">
+                    次のパートでは、整理した言葉を使って<br>
+                    実際の「My Palette」を形にしていきます。<br>
+                    集中力を高められるよう、十分に休んでください。
+                </p>
+            </div>
+            <span class="slide-number">10</span>
+        </div>
+
+        <!-- ========== SLIDE 10: My Palette 3層構造 ========== -->
+        <div class="slide" data-slide="10">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 3 ── 形にする</div>
+                <h2 class="anim">My Palette の<span class="accent">3層構造</span></h2>
+                <div class="layer-stack anim">
+                    <div class="layer top">
+                        <span class="layer-tag">最上層</span>
+                        <div class="layer-content">
+                            <h3>キーワード（1語）</h3>
+                            <p>自分を貫くテーマ。常套句ではなく、自分だけの言葉で。</p>
+                        </div>
+                    </div>
+                    <div class="layer mid" style="border-left: 3px solid var(--accent-1);">
+                        <span class="layer-tag">中間層</span>
+                        <div class="layer-content">
+                            <h3>3つの柱 ──「真ん中の言葉」</h3>
+                            <p>
+                                ① 価値観（守りたいもの／やらないこと）<br>
+                                ② パターン（続けていること／やめたいこと）<br>
+                                ③ 方角（これからどこへ向かうか）
+                            </p>
+                        </div>
+                    </div>
+                    <div class="layer bot">
+                        <span class="layer-tag">土台層</span>
+                        <div class="layer-content">
+                            <h3>具体エピソード・素材</h3>
+                            <p>心が動いた瞬間、怒り、恐れ、習慣、未来像…この2日間のすべて。</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="anim" style="text-align:center;">
+                    土台の具体から中間層の色を抽出し、最上層のテーマへ。
+                </p>
+            </div>
+            <span class="slide-number">11</span>
+        </div>
+
+        <!-- ========== SLIDE 11: 2トラック制 ========== -->
+        <div class="slide" data-slide="11">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 3 ── 形にする</div>
+                <h2 class="anim">作業の進め方 ──<span class="accent"> 2トラック制</span></h2>
+                <div class="card-row anim">
+                    <div class="card warm" style="flex:1;">
+                        <div class="card-label">TRACK A</div>
+                        <h3>整理ができた方</h3>
+                        <p>Canvaを使って言葉を打ち込む。<br>きれいに作ることが目的ではなく、<strong>自分の言葉を「置いてみる」</strong>感覚で。</p>
+                    </div>
+                    <div class="card cool" style="flex:1;">
+                        <div class="card-label">TRACK B</div>
+                        <h3>まだ整理が足りない方</h3>
+                        <p>引き続き整理を進める。<br>回りますので、お気軽にお声がけください。</p>
+                    </div>
+                </div>
+                <p class="anim" style="text-align:center;">
+                    簡潔に発表できる形まで持っていくことよりも、<br>
+                    <span class="highlight">本当に今後使える「パレットにおける色」</span>にしていくことが大事。
+                </p>
+            </div>
+            <span class="slide-number">12</span>
+        </div>
+
+        <!-- ========== SLIDE 12: 真ん中の言葉を見つけるヒント ========== -->
+        <div class="slide" data-slide="12">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 3 ── 形にする</div>
+                <h2 class="anim"><span class="accent">「真ん中の言葉」</span>を見つけるヒント</h2>
+                <div class="tech-grid anim">
+                    <div class="tech-card">
+                        <span class="tech-name">くくる</span>
+                        <span class="tech-desc">複数の具体を一つにまとめる</span>
+                        <span class="tech-example">「日記・読書・早起き」→<br>「自分と向き合う時間」</span>
+                    </div>
+                    <div class="tech-card">
+                        <span class="tech-name">掛ける</span>
+                        <span class="tech-desc">異なる2つの概念を組み合わせる</span>
+                        <span class="tech-example">「自己満足」×「世界との関わり」→<br>「波紋を生む自己表現」</span>
+                    </div>
+                    <div class="tech-card">
+                        <span class="tech-name">反転させる</span>
+                        <span class="tech-desc">やりたくないこと→本当にやりたいこと</span>
+                        <span class="tech-example">「決めつけられたくない」→<br>「可能性を残し続ける」</span>
+                    </div>
+                    <div class="tech-card">
+                        <span class="tech-name">主語を変える</span>
+                        <span class="tech-desc">未来の自分や第三者から見る</span>
+                        <span class="tech-example">「頑張りたい」→<br>「5年後の自分は何と言う？」</span>
+                    </div>
+                    <div class="tech-card">
+                        <span class="tech-name">動詞にする</span>
+                        <span class="tech-desc">名詞を行動に落とす</span>
+                        <span class="tech-example">「本質」→<br>「本質に触れ続ける」</span>
+                    </div>
+                </div>
+            </div>
+            <span class="slide-number">13</span>
+        </div>
+
+        <!-- ========== SLIDE 13: 発表テンプレート ========== -->
+        <div class="slide" data-slide="13">
+            <div class="slide-inner">
+                <div class="section-label anim">PART 3 ── 形にする</div>
+                <h2 class="anim">発表のフォーマット</h2>
+                <div class="pres-template anim">
+                    <div class="pres-label">KEYWORD</div>
+                    <div class="pres-kw">「<span class="pres-line"></span>」</div>
+                    <div style="height:1px; width:80%; background:var(--border);"></div>
+                    <div class="pres-label">MY PALETTE</div>
+                    <div class="pres-sub">これからの日々では<br>「<span class="pres-line"></span>」がキーワード</div>
+                    <div style="height:1px; width:80%; background:var(--border);"></div>
+                    <div class="pres-label">72H ACTION</div>
+                    <div class="pres-sub">72時間でやること：<br>「<span class="pres-line"></span>」</div>
+                </div>
+                <p class="anim" style="text-align:center; font-size:15px; color:var(--text-muted);">
+                    発表は1人5分 ── キーワード（1語）・背景の1行・72時間の一歩（動詞で）
+                </p>
+            </div>
+            <span class="slide-number">14</span>
+        </div>
+
+        <!-- ========== SLIDE 14: 残り15分 ========== -->
+        <div class="slide" data-slide="14">
+            <div class="slide-inner title-slide">
+                <div class="section-label anim">残り 15分</div>
+                <h2 class="anim" style="font-size:clamp(24px,3vw,36px);">大事なのは<span class="accent">3つだけ</span></h2>
+                <ul class="numbered-list anim" style="max-width:600px;">
+                    <li>
+                        <span class="num-circle">1</span>
+                        <div>
+                            <strong style="color:var(--accent-1);">キーワード（1語）</strong><br>
+                            <span style="color:var(--text-secondary);">自分を貫く言葉</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="num-circle">2</span>
+                        <div>
+                            <strong style="color:var(--accent-1);">背景の1行</strong><br>
+                            <span style="color:var(--text-secondary);">なぜその言葉なのか</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="num-circle">3</span>
+                        <div>
+                            <strong style="color:var(--accent-1);">72時間の一歩</strong><br>
+                            <span style="color:var(--text-secondary);">動詞で、具体的に</span>
+                        </div>
+                    </li>
+                </ul>
+                <p class="anim" style="text-align:center; margin-top:16px;">
+                    完成していなくても大丈夫。<br>
+                    この3つが決まっていれば、午後の発表は十分できます。
+                </p>
+            </div>
+            <span class="slide-number">15</span>
+        </div>
+
+        <!-- ========== SLIDE 15: 締め ========== -->
+        <div class="slide" data-slide="15">
+            <div class="slide-inner title-slide">
+                <div class="title-deco anim"></div>
+                <div class="big-text anim">
+                    午後の発表は<br>
+                    <span style="color:var(--text-muted);">"完成披露"</span>ではなく<br>
+                    <span class="accent">"定着"</span>のための時間
+                </div>
+                <p class="anim" style="text-align:center; max-width:600px;">
+                    言葉にして人に話すことで、自分の中に刻まれていきます。
+                </p>
+                <p class="anim" style="text-align:center; color:var(--text-muted); font-size:16px;">
+                    お昼休憩に入りましょう。お疲れさまでした。
+                </p>
+            </div>
+            <span class="slide-number">16</span>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">←</button>
+        <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <span class="nav-progress" id="navProgress">1 / 16</span>
+        <button class="nav-btn" id="nextBtn" onclick="navigate(1)">→</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+        let current = 0;
+
+        function showSlide(index) {
+            slides.forEach((s, i) => {
+                s.classList.remove('active');
+                if (i === index) s.classList.add('active');
+            });
+            document.getElementById('navProgress').textContent = `${index + 1} / ${total}`;
+            document.getElementById('progressFill').style.width = `${((index + 1) / total) * 100}%`;
+        }
+
+        function navigate(dir) {
+            const next = current + dir;
+            if (next < 0 || next >= total) return;
+            current = next;
+            showSlide(current);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault(); navigate(1);
+            }
+            if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+                e.preventDefault(); navigate(-1);
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
+        });
+
+        // Initial
+        showSlide(0);
+    </script>
+
+</body>
+
+</html>
